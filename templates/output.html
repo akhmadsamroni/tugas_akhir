@@ -1,0 +1,29 @@
+{% include "header.html" %}
+<h1>Generator Puisi:</h1>
+<form name="my_form" action="" method="post" >
+  <div>
+    <label for="puisi">puisi</label>
+    <textarea name="puisi" id="id_puisi" cols="30" rows="10">{{name}}</textarea>
+  </div>
+
+  <div>
+    <label for="author">author</label>
+    <input type="text" name="author" id="id_author">
+  </div>
+
+  <div>
+    <label for="judul">judul</label>
+    <input type="text" name="judul" id="id_judul">
+    </div>
+
+  <div>
+    <label for="tanggal">tanggal</label>
+    <input type="date" name="tanggal" id="id_tanggal">
+  </div>
+
+  <div>
+    <button type="submit" >simpan</button>
+  </div>
+</form>
+
+{% include "footer.html" %}

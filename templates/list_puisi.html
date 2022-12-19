@@ -1,0 +1,24 @@
+{% include "header.html" %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">judul</th>
+        <th scope="col">author</th>
+        <th scope="col">anggal</th>
+        <th scope="col">puisi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in rv %}
+        <tr>
+          <td>{{ p[0] }}</td>
+          <td>{{ p[1] }}</td>
+          <td>{{ p[2] }}</td>
+          <td>{{ p[3] }}</td>
+          <td>{{ p[4] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% include "footer.html" %}
