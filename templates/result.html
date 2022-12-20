@@ -1,0 +1,18 @@
+{% include "header.html" %}
+{{ share.load() }}
+<div>
+    
+    {% for p in rv %}
+
+    <h1>{{ p[1] }}</h1>
+    <h4>{{ p[2] }}</h4>
+    <h4>{{ p[3] }}</h4>
+    <p>{{ p[4] }}</p>
+        
+    {% endfor %}
+    {{ share.create(title='Share with: ') }}
+</div>
+    
+    
+
+{% include "footer.html" %}
