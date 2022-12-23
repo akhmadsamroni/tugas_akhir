@@ -1,4 +1,6 @@
-transformers
-pytorch
-flask
-flask-mysqldb
+Python 3.10.2
+Flask 2.2.2
+Werkzeug 2.2.2
+transformers 4.24.0
+flask-mysqldb 1.0.1 
+Bootstrap  v5.2.3
