@@ -5,14 +5,15 @@
     <tr>
         <th>ID</th>
         <th>Username</th>
-        <th>Role</th>
-        <th>Aksi</th>
+        <th>email</th>
+        <th>level</th>
     </tr>
     {% for user in users %}
         <tr>
             <td>{{ user['id'] }}</td>
             <td>{{ user['username'] }}</td>
-            <td>{{ user['role'] }}</td>
+            <td>{{ user['email'] }}</td>
+            <td>{{ user['level'] }}</td>
             <td>
                 <a href="{{ url_for('edit_user', id=user['id']) }}">Edit</a>
                 <a href="{{ url_for('delete_user', id=user['id']) }}">Hapus</a>

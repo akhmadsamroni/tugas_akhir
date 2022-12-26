@@ -1,12 +1,14 @@
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from transformers import pipeline, AutoTokenizer, AutoModel
 from flask_mysqldb import MySQL 
+from werkzeug.security import check_password_hash, generate_password_hash
 import os
 import string
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.secret_key = 'kunci rahasia'
 
 # path = ('./model')
 # tokenizer = AutoTokenizer.from_pretrained(path)
@@ -47,7 +49,60 @@ def home():
 
 @app.route("/index")
 def index():
-  return render_template('index.html')
+    if 'loggedin' in session:
+        return render_template('index.html')
+    flash('Harap Login dulu','danger')
+    return redirect(url_for('login'))
+
+#registrasi
+@app.route('/register', methods=('GET','POST'))
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        #cek username atau email
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM users WHERE username=%s OR email=%s',(username, email, ))
+        akun = cursor.fetchone()
+        if akun is None:
+            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s)', (username, email, generate_password_hash(password), level))
+            mysql.connection.commit()
+            flash('Registrasi Berhasil','success')
+        else :
+            flash('Username atau email sudah ada','danger')
+    return render_template('register.html')
+
+#login
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        #cek data username
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM users WHERE email=%s',(email, ))
+        akun = cursor.fetchone()
+        if akun is None:
+            flash('Login Gagal, Cek Username Anda','danger')
+        elif not check_password_hash(akun[3], password):
+            flash('Login gagal, Cek Password Anda', 'danger')
+        else:
+            session['loggedin'] = True
+            session['username'] = akun[1]
+            session['level'] = akun[4]
+            return redirect(url_for('index'))
+    return render_template('login.html')
+
+#logout
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    session.pop('username', None)
+    session.pop('level', None)
+    return redirect(url_for('login'))
 
 
 @app.route('/list_puisi')
@@ -96,6 +151,14 @@ def output():
         cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal) VALUES (%s,%s,%s,%s)''', (puisi,judul,author,tanggal))
         mysql.connection.commit()
         return render_template('output.html')
+
+@app.route('/list_users')
+def list_users():
+    return render_template('list_users.html')
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
