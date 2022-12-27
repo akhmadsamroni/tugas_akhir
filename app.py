@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, flash, render_template, request, redirect, url_for, session
 from transformers import pipeline, AutoTokenizer, AutoModel
 from flask_mysqldb import MySQL 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -44,15 +44,18 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
-    return render_template('homepage.html')
+    return render_template('landing/homepage.html')
 
+# @app.route('/landing/homepage')
+# def homepage():
+#     return render_template('landing/homepage.html')
 
 @app.route("/index")
 def index():
     if 'loggedin' in session:
-        return render_template('index.html')
+        return render_template('pages/index.html')
     flash('Harap Login dulu','danger')
-    return redirect(url_for('login'))
+    return redirect(url_for('landing/login'))
 
 #registrasi
 @app.route('/register', methods=('GET','POST'))
@@ -72,7 +75,7 @@ def register():
             flash('Registrasi Berhasil','success')
         else :
             flash('Username atau email sudah ada','danger')
-    return render_template('register.html')
+    return render_template('landing/register.html')
 
 #login
 @app.route('/login', methods=('GET', 'POST'))
@@ -94,7 +97,7 @@ def login():
             session['username'] = akun[1]
             session['level'] = akun[4]
             return redirect(url_for('index'))
-    return render_template('login.html')
+    return render_template('landing/login.html')
 
 #logout
 @app.route('/logout')
@@ -102,21 +105,20 @@ def logout():
     session.pop('loggedin', None)
     session.pop('username', None)
     session.pop('level', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('landing/login'))
 
 
 @app.route('/list_puisi')
 def list_puisi():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM list_puisi''')
-    rv = cur.fetchall()
-    # return str(rv)
-    return render_template('list_puisi.html', rv=rv)
+    l_puisi = cur.fetchall()
+    return render_template('pages/list_puisi.html', l_puisi=l_puisi)
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('pages/about.html')
 
 
 @app.route('/output', methods=['POST'])
@@ -141,7 +143,7 @@ def output():
             n = len(string)
             string = string[20:n-2]
             string = string.replace('\\n', '')
-            return render_template('output.html', name=string)
+            return render_template('generate/output.html', name=string)
     elif request.method == 'POST' :
         puisi = request.form['puisi']
         judul = request.form['judul']
@@ -150,15 +152,54 @@ def output():
         cur = mysql.connection.cursor()
         cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal) VALUES (%s,%s,%s,%s)''', (puisi,judul,author,tanggal))
         mysql.connection.commit()
-        return render_template('output.html')
+        return render_template('generate/output.html')
 
 @app.route('/list_users')
 def list_users():
-    return render_template('list_users.html')
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM users''')
+    l_users = cur.fetchall()
+    return render_template('pages/admin/list_users.html', l_users=l_users)
 
 @app.route('/account')
 def account():
-    return render_template('account.html')
+    return render_template('pages/account.html')
+
+@app.route('/edit_user/<username>', methods=['GET','POST'])
+def edit_user(username):
+    if request.method == 'GET':
+        
+        cur = mysql.connection.cursor()
+        cur.execute('''
+        SELECT * 
+        FROM users  
+        WHERE username = %s''', (username, ))
+        user = cur.fetchone()
+        cur.close()
+
+        return render_template('/pages/admin/edit_user.html', user=user)
+    else:
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        cur = mysql.connection.cursor()
+        
+        cur.execute(''' 
+        UPDATE users 
+        SET 
+
+            email = %s,
+            password = %s
+        WHERE
+            username = %s;
+        ''',(email, generate_password_hash(password), username))
+        
+        mysql.connection.commit()
+        cur.close()
+        flash('Edit berhasil','success')
+        return redirect(url_for('list_users'))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
