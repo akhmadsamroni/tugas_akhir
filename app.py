@@ -1,14 +1,14 @@
 
 from flask import Flask, flash, render_template, request, redirect, url_for, session
 from transformers import pipeline, AutoTokenizer, AutoModel
-from flask_mysqldb import MySQL 
+from flask_mysqldb import MySQL, MySQLdb
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 import string
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.secret_key = 'kunci rahasia'
+
 
 # path = ('./model')
 # tokenizer = AutoTokenizer.from_pretrained(path)
@@ -33,6 +33,8 @@ generator = pipeline(
 #     return result
 
 # koneksi database
+app.secret_key = 'kunci rahasia'
+app.config['MYSQL_HOST'] ='localhost'
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = ""
 app.config["MYSQL_DB"] = "puisi"
@@ -64,6 +66,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        level = 'user'
 
         #cek username atau email
         cursor = mysql.connection.cursor()
@@ -105,7 +108,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('username', None)
     session.pop('level', None)
-    return redirect(url_for('landing/login'))
+    return redirect(url_for('login'))
 
 
 @app.route('/list_puisi')
@@ -165,6 +168,7 @@ def list_users():
 def account():
     return render_template('pages/account.html')
 
+
 @app.route('/edit_user/<username>', methods=['GET','POST'])
 def edit_user(username):
     if request.method == 'GET':
@@ -182,24 +186,32 @@ def edit_user(username):
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        level = 'user'
 
         cur = mysql.connection.cursor()
         
         cur.execute(''' 
         UPDATE users 
         SET 
-
             email = %s,
-            password = %s
+            password = %s,
+            level = %s
         WHERE
             username = %s;
-        ''',(email, generate_password_hash(password), username))
+        ''',(email, generate_password_hash(password), level, username))
         
         mysql.connection.commit()
         cur.close()
         flash('Edit berhasil','success')
         return redirect(url_for('list_users'))
 
+@app.route('/delete/<int:id>', methods=["GET"])
+def delete(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM user WHERE id=%s", (id,))
+    mysql.connection.commit()
+    flash("data Berhasil di Hapus")
+    return redirect( url_for('list_user'))
 
 if __name__ == "__main__":
     app.run(debug=True)

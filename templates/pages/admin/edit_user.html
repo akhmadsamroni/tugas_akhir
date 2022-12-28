@@ -3,7 +3,7 @@
 <title>AI PUISI</title>
 
 
-<form action="edit_user" method="post">
+<form action="{{ url_for('list_users') }}" method="post">
     <div class="mb-3">
         <label for="username" class="form-label">Username</label>
         <input type="text" class="form-control" id="username" value="{{ user[1] }}" name="username" autocomplete="off" required>
