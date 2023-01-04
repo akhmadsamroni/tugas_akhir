@@ -28,8 +28,10 @@
             <tr>
                 <th>ID</th>
                 <th>Username</th>
-                <th>email</th>
-                <th>level</th>
+                <th>Email</th>
+                <th>Level</th>
+                <th>Tanggal Registrasi</th>
+                <th>Terakhir Diubah</th>
             </tr>
         </thead>
 
@@ -40,8 +42,10 @@
                 <td>{{ user['username'] }}</td>
                 <td>{{ user['email'] }}</td>
                 <td>{{ user['level'] }}</td>
+                <td>{{ user['tanggal_register'] }}</td>
+                <td>{{ user['tanggal_update'] }}</td>
                 <td>
-                    <a href="edit_user/{{ user['username'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
+                    <a href="edit_user/{{ user['id'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
                     <a href="{{ url_for('delete', id=user['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
                 </td>
             </tr>

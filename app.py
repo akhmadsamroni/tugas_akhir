@@ -156,14 +156,14 @@ def list_users():
     l_users = cur.fetchall()
     return render_template('list_users.html', l_users=l_users)
 
-@app.route('/edit_user/<username>', methods=['GET','POST'])
-def edit_user(username):
+@app.route('/edit_user/<id>', methods=['GET','POST'])
+def edit_user(id):
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         cur.execute('''
         SELECT * 
         FROM users  
-        WHERE username = %s''', (username, ))
+        WHERE id = %s''', (id, ))
         user = cur.fetchone()
         cur.close()
 
@@ -173,18 +173,23 @@ def edit_user(username):
         email = request.form['email']
         password = request.form['password']
         level = 'user'
+        tanggal_register = datetime.datetime.now()
+        tanggal_update = datetime.datetime.now()
 
         cur = mysql.connection.cursor()
         
         cur.execute(''' 
         UPDATE users 
         SET 
+            username = %s,
             email = %s,
             password = %s,
-            level = %s
+            level = %s,
+            tanggal_register = %s,
+            tanggal_update =%s
         WHERE
-            username = %s;
-        ''',(email, generate_password_hash(password), level, username))
+            id = %s;
+        ''',(username, email, generate_password_hash(password), level,tanggal_register, tanggal_update, id))
         
         mysql.connection.commit()
         cur.close()
