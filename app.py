@@ -1,13 +1,16 @@
-
-from flask import Flask, flash, render_template, request, redirect, url_for, session
-from transformers import pipeline, AutoTokenizer, AutoModel
-from flask_mysqldb import MySQL, MySQLdb
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from transformers import pipeline, AutoTokenizer,GPT2LMHeadModel, AutoModel, GPT2Tokenizer, AutoModelForCausalLM
+from flask_mysqldb import MySQL
+from werkzeug.security import check_password_hash, generate_password_hash 
+from flask_share import Share
+import datetime
 import os
 import string
+import logging
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.secret_key = 'kunci rahasia'
 
 
 # path = ('./model')
@@ -15,51 +18,30 @@ app.config['DEBUG'] = True
 # # model = AutoModel.from_pretrained(path)
 generator = pipeline(
     task='text-generation', 
-    model='./model',
-    tokenizer= './model')
-
-
-# def process(text_generator, text: str, max_length: int = 100, do_sample: bool = True, top_k: int = 50, top_p: float = 0.95,
-#             temperature: float = 1.0, max_time: float = 120.0, seed=42, repetition_penalty=1.0):
-#     # st.write("Cache miss: process")
-#     set_seed(seed)
-#     if repetition_penalty == 0.0:
-#         min_penalty = 1.05
-#         max_penalty = 1.5
-#         repetition_penalty = max(min_penalty + (1.0-temperature) * (max_penalty-min_penalty), 0.8)
-#     result = text_generator(text, max_length=max_length, do_sample=do_sample,
-#                             top_k=top_k, top_p=top_p, temperature=temperature,
-#                             max_time=max_time, repetition_penalty=repetition_penalty)
-#     return result
+    model=AutoModelForCausalLM.from_pretrained('samroni/puisi_model_gpt2_small'),
+    tokenizer= GPT2Tokenizer.from_pretrained('samroni/puisi_model_gpt2_small'))
 
 # koneksi database
-app.secret_key = 'kunci rahasia'
-app.config['MYSQL_HOST'] ='localhost'
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = ""
 app.config["MYSQL_DB"] = "puisi"
-# Extra configs, optional:
-# app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-# app.config["MYSQL_CUSTOM_OPTIONS"] = {"ssl": {"ca": "/path/to/ca-file"}}  # https://mysqlclient.readthedocs.io/user_guide.html#functions-and-attributes
+app.config["MYSQL_CURSORCLASS"] = "DictCursor"
+app.config["MYSQL_CUSTOM_OPTIONS"] = {"ssl": {"ca": "/path/to/ca-file"}}  # https://mysqlclient.readthedocs.io/user_guide.html#functions-and-attributes
 
 mysql = MySQL(app)
+share = Share(app)
 
 @app.route('/')
 def home():
-    return render_template('landing/homepage.html')
-
-# @app.route('/landing/homepage')
-# def homepage():
-#     return render_template('landing/homepage.html')
+    return render_template('homepage.html')
 
 @app.route("/index")
 def index():
     if 'loggedin' in session:
-        return render_template('pages/index.html')
+        return render_template('index.html')
     flash('Harap Login dulu','danger')
-    return redirect(url_for('landing/login'))
+    return redirect(url_for('login'))
 
-#registrasi
 @app.route('/register', methods=('GET','POST'))
 def register():
     if request.method == 'POST':
@@ -78,7 +60,7 @@ def register():
             flash('Registrasi Berhasil','success')
         else :
             flash('Username atau email sudah ada','danger')
-    return render_template('landing/register.html')
+    return render_template('register.html')
 
 #login
 @app.route('/login', methods=('GET', 'POST'))
@@ -93,14 +75,14 @@ def login():
         akun = cursor.fetchone()
         if akun is None:
             flash('Login Gagal, Cek Username Anda','danger')
-        elif not check_password_hash(akun[3], password):
+        elif not check_password_hash(akun['password'], password):
             flash('Login gagal, Cek Password Anda', 'danger')
         else:
             session['loggedin'] = True
-            session['username'] = akun[1]
-            session['level'] = akun[4]
+            session['username'] = akun['username']
+            session['level'] = akun['level']
             return redirect(url_for('index'))
-    return render_template('landing/login.html')
+    return render_template('login.html')
 
 #logout
 @app.route('/logout')
@@ -110,24 +92,21 @@ def logout():
     session.pop('level', None)
     return redirect(url_for('login'))
 
-
 @app.route('/list_puisi')
 def list_puisi():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM list_puisi''')
     l_puisi = cur.fetchall()
-    return render_template('pages/list_puisi.html', l_puisi=l_puisi)
-
+    return render_template('list_puisi.html', l_puisi=l_puisi)
 
 @app.route('/about')
 def about():
-    return render_template('pages/about.html')
-
+    return render_template('about.html')
 
 @app.route('/output', methods=['POST'])
 def output():
-    if request.method == 'POST' and "name" in request.form:
-        isi = request.form['name']
+    if request.method == 'POST' and "hasil_puisi" in request.form:
+        isi = request.form['hasil_puisi']
         output = generator(
             isi,
             max_length=50, # max token to generate
@@ -146,33 +125,40 @@ def output():
             n = len(string)
             string = string[20:n-2]
             string = string.replace('\\n', '')
-            return render_template('generate/output.html', name=string)
-    elif request.method == 'POST' :
+            # string = ' '.join(string.split()).upper() + '\n' # hapus white space dan ubah judul kata ke huruf besar
+            return render_template('output.html', hasil_puisi=string)
+    elif request.method == 'POST':
         puisi = request.form['puisi']
         judul = request.form['judul']
         author = request.form['author']
-        tanggal = request.form['tanggal']
+        tanggal_pembuatan = datetime.datetime.now()
+        tanggal_update = datetime.datetime.now()
         cur = mysql.connection.cursor()
-        cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal) VALUES (%s,%s,%s,%s)''', (puisi,judul,author,tanggal))
+        cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal_pembuatan,tanggal_update) VALUES (%s,%s,%s,%s,%s)''', (puisi,judul,author,tanggal_pembuatan,tanggal_update))
         mysql.connection.commit()
-        return render_template('generate/output.html')
+        return redirect(url_for('result'))
+
+@app.route('/result')
+def result():
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM list_puisi ORDER BY id DESC LIMIT 1''')
+    result = cur.fetchone()
+    return render_template('result.html', result=result)
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
 
 @app.route('/list_users')
 def list_users():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM users''')
     l_users = cur.fetchall()
-    return render_template('pages/admin/list_users.html', l_users=l_users)
-
-@app.route('/account')
-def account():
-    return render_template('pages/account.html')
-
+    return render_template('list_users.html', l_users=l_users)
 
 @app.route('/edit_user/<username>', methods=['GET','POST'])
 def edit_user(username):
     if request.method == 'GET':
-        
         cur = mysql.connection.cursor()
         cur.execute('''
         SELECT * 
@@ -181,8 +167,8 @@ def edit_user(username):
         user = cur.fetchone()
         cur.close()
 
-        return render_template('/pages/admin/edit_user.html', user=user)
-    else:
+        return render_template('edit_user.html', user=user)
+    elif request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
@@ -205,13 +191,13 @@ def edit_user(username):
         flash('Edit berhasil','success')
         return redirect(url_for('list_users'))
 
-@app.route('/delete/<int:id>', methods=["GET"])
+@app.route('/delete/<id>', methods=["GET"])
 def delete(id):
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM user WHERE id=%s", (id,))
+    cur.execute('''DELETE FROM users WHERE id=%s''', (id,))
     mysql.connection.commit()
-    flash("data Berhasil di Hapus")
-    return redirect( url_for('list_user'))
+    flash('data Berhasil di Hapus', 'success')
+    return redirect( url_for('list_users'))
 
 if __name__ == "__main__":
     app.run(debug=True)
