@@ -9,6 +9,7 @@
 </head>
 <body>
   {% include "header.html" %}
+
   <div class="row">
         
     <div class="col-lg-2">
@@ -23,6 +24,16 @@
       </div>
     
     </div>
+
+    {% if session['level'] == 'admin' : %}
+    <div class="col mt-5">
+      <h1>username = admin</h1>
+    <h1>level = admin</h1>
+    <h1>Anda Login Sebagai admin</h1>
+    </div>
+    
+
+   {% else :%}
 
     <div class="col">
 
@@ -39,7 +50,7 @@
     {% endif %}
     {% endwith %}
 
-      <table class="table">
+      <table class="table mb-5">
         <thead>
           <tr>
             <th scope="col">id</th>
@@ -72,6 +83,8 @@
       </table>
 
     </div>
+
+    {% endif %}
 
   {% include "footer.html" %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

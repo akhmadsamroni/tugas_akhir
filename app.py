@@ -141,13 +141,24 @@ def output():
         cur.close()
         return redirect(url_for('result'))
 
-@app.route('/result')
-def result():
+@app.route('/result/<username>')
+def result(username):
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM list_puisi ORDER BY id DESC LIMIT 1''')
-    result = cur.fetchone()
+    cur.execute('''
+    SELECT *
+    FROM list_puisi
+    WHERE author = %s
+    ORDER BY tanggal_pembuatan DESC
+    LIMIT 1''', (session['username'],))
+    hsl = cur.fetchone()
     cur.close()
-    return render_template('result.html', result=result)
+    print(hsl)
+    return render_template('result.html', hsl=hsl)
+    # cur = mysql.connection.cursor()
+    # cur.execute('''SELECT * FROM list_puisi ORDER BY id DESC LIMIT 1''')
+    # hsl = cur.fetchone()
+    # cur.close()
+    # return render_template('result.html', hsl=hsl)
 
 @app.route('/list_users')
 def list_users():
@@ -265,7 +276,7 @@ def delete_puisi(id):
     mysql.connection.commit()
     cur.close()
     flash('data Berhasil di Hapus', 'success')
-    return redirect( url_for('acount'))
+    return redirect( url_for('account', username=session['username']))
 
 if __name__ == "__main__":
     app.run(debug=True)

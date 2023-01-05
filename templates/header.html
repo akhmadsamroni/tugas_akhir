@@ -14,7 +14,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button> 
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div class="collapse navbar-collapse " id="navbarNavDropdown">
           <ul class="navbar-nav">
             {% if session['level'] == 'admin' : %}
               <li class="nav-item">
@@ -30,20 +30,22 @@
               <li class="nav-item">
                 <a class="nav-link " href="{{url_for('list_puisi')}}">List Puisi</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a class="nav-link " href="{{url_for('about')}}">about</a>
               </li>
             {% endif %}
-            <li class="nav-item dropdown justify-content-end ml-auto">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                USERNAME: {{ session.username }}
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{url_for('account', username=session['username'])}}">Akun</a></li>
-                <li><hr class="dropdown-divider" href="#"></li>
-                <li><a class="dropdown-item" href="{{url_for('logout')}}">logout</a></li>
-              </ul>
-            </li>
+            
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  USERNAME: {{ session.username }}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{{url_for('account', username=session['username'])}}">Akun</a></li>
+                  <li><hr class="dropdown-divider" href="#"></li>
+                  <li><a class="dropdown-item" href="{{url_for('logout')}}">logout</a></li>
+                </ul>
+              </li>
           </ul>
         </div>
       </div>
