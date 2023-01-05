@@ -26,7 +26,7 @@ app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = ""
 app.config["MYSQL_DB"] = "puisi"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-app.config["MYSQL_CUSTOM_OPTIONS"] = {"ssl": {"ca": "/path/to/ca-file"}}  # https://mysqlclient.readthedocs.io/user_guide.html#functions-and-attributes
+# app.config["MYSQL_CUSTOM_OPTIONS"] = {"ssl": {"ca": "/path/to/ca-file"}}  # https://mysqlclient.readthedocs.io/user_guide.html#functions-and-attributes
 
 mysql = MySQL(app)
 share = Share(app)
@@ -98,6 +98,7 @@ def list_puisi():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM list_puisi''')
     l_puisi = cur.fetchall()
+    cur.close()
     return render_template('list_puisi.html', l_puisi=l_puisi)
 
 @app.route('/about')
@@ -131,12 +132,13 @@ def output():
     elif request.method == 'POST':
         puisi = request.form['puisi']
         judul = request.form['judul']
-        author = request.form['author']
+        author = session['username'] 
         tanggal_pembuatan = datetime.datetime.now()
         tanggal_update = datetime.datetime.now()
         cur = mysql.connection.cursor()
         cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal_pembuatan,tanggal_update) VALUES (%s,%s,%s,%s,%s)''', (puisi,judul,author,tanggal_pembuatan,tanggal_update))
         mysql.connection.commit()
+        cur.close()
         return redirect(url_for('result'))
 
 @app.route('/result')
@@ -144,6 +146,7 @@ def result():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM list_puisi ORDER BY id DESC LIMIT 1''')
     result = cur.fetchone()
+    cur.close()
     return render_template('result.html', result=result)
 
 @app.route('/list_users')
@@ -151,6 +154,7 @@ def list_users():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM users''')
     l_users = cur.fetchall()
+    cur.close()
     return render_template('list_users.html', l_users=l_users)
 
 @app.route('/edit_user/<id>', methods=['GET','POST'])
@@ -198,34 +202,24 @@ def delete(id):
     cur = mysql.connection.cursor()
     cur.execute('''DELETE FROM users WHERE id=%s''', (id,))
     mysql.connection.commit()
+    cur.close()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('list_users'))
 
 @app.route('/account/<username>')
 def account(username):
-    # Memeriksa apakah pengguna yang login sama dengan pengguna yang ingin ditampilkan
-    if session['username'] == username:
-        # Mengambil data pengguna yang login
-        cur = mysql.connection.cursor()
-        cur.execute('''
-        SELECT * 
-        FROM users 
-        WHERE username = %s''', (username, ))
-        usr = cur.fetchone()
-        cur.close()
-        return render_template('account.html', usr=usr)
-    # Jika pengguna yang login tidak sama dengan pengguna yang ingin ditampilkan
-    elif session['username'] != username:
+    username = session['username']
         # Mengambil data pengguna yang ingin ditampilkan
-        cur = mysql.connection.cursor()
-        cur.execute('''
-        SELECT u.username, l.judul, l.author, l.tanggal_pembuatan, l.puisi
-        FROM users u
-        JOIN list_puisi l ON u.username = l.author
-        WHERE u.username = %s''', (username,))
-        data = cur.fetchall()
-        cur.close()
-        return render_template('account.html', data=data)
+    cur = mysql.connection.cursor()
+    cur.execute('''
+    SELECT u.username, l.judul, l.author, l.tanggal_pembuatan, l.puisi
+    FROM users u
+    JOIN list_puisi l ON u.username = l.author
+    WHERE u.username = %s''', (username,))
+    data = cur.fetchall()
+    cur.close()
+    print(data)
+    return render_template('account.html', data=data)
 
 @app.route('/edit_puisi/<id>', methods=['GET','POST'])
 def edit_puisi(id):
@@ -270,6 +264,7 @@ def delete_puisi(id):
     cur = mysql.connection.cursor()
     cur.execute('''DELETE FROM list_puisi WHERE id=%s''', (id,))
     mysql.connection.commit()
+    cur.close()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('acount'))
 

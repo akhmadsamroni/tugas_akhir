@@ -11,12 +11,14 @@
     {% include "header.html" %}
     {{ share.load() }}
     <div>
-        {% for p in result %}
-        
-        <h1>{{ p['judul'] }}</h1>
-        <h4>{{ p['author'] }}</h4>
-        <h4>{{ p['tanggal_update'].strptime("%d %b %Y %H:%M") }}</h4>
-        <p>{{ p['puisi'] }}</p>
+        {% for pui in result %}
+
+        <h1>{{ pui['id'] }}</h1>
+        <h1>{{ pui['judul'] }}</h1>
+        <h4>{{ pui['author'] }}</h4>
+        <h4>{{ pui['tanggal_pembuatan'] }}</h4>
+        <h4>{{ pui['tanggal_update'] }}</h4>
+        <p>{{ pui['puisi'] }}</p>
        
         {% endfor %}
     </div>
