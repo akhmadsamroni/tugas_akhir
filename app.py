@@ -212,13 +212,12 @@ def account(username):
         # Mengambil data pengguna yang ingin ditampilkan
     cur = mysql.connection.cursor()
     cur.execute('''
-    SELECT u.username, l.judul, l.author, l.tanggal_pembuatan, l.puisi
+    SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.puisi
     FROM users u
     JOIN list_puisi l ON u.username = l.author
     WHERE u.username = %s''', (username,))
     data = cur.fetchall()
     cur.close()
-    print(data)
     return render_template('account.html', data=data)
 
 @app.route('/edit_puisi/<id>', methods=['GET','POST'])
@@ -229,10 +228,10 @@ def edit_puisi(id):
         SELECT * 
         FROM list_puisi  
         WHERE id = %s''', (id, ))
-        user = cur.fetchone()
+        data_puisi = cur.fetchone()
         cur.close()
 
-        return render_template('edit_user.html', user=user)
+        return render_template('edit_puisi.html', data_puisi=data_puisi)
     elif request.method == 'POST':
         judul = request.form['judul']
         author = request.form['author']
@@ -246,7 +245,7 @@ def edit_puisi(id):
         SET 
             judul = %s,
             author = %s,
-            tanggal_register = %s,
+            tanggal_pembuatan = %s,
             tanggal_update =%s,
             puisi = %s
             
@@ -257,7 +256,7 @@ def edit_puisi(id):
         mysql.connection.commit()
         cur.close()
         flash('Edit berhasil','success')
-        return redirect(url_for('account'))
+        return redirect(url_for('account', username=session['username'] ))
 
 @app.route('/delete_puisi/<id>', methods=["GET"])
 def delete_puisi(id):
@@ -267,7 +266,6 @@ def delete_puisi(id):
     cur.close()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('acount'))
-
 
 if __name__ == "__main__":
     app.run(debug=True)

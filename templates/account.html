@@ -26,12 +26,26 @@
 
     <div class="col">
 
+      <!-- pesan flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <!-- alert -->
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>                    
+        {% endfor %}                   
+    {% endif %}
+    {% endwith %}
+
       <table class="table">
         <thead>
           <tr>
+            <th scope="col">id</th>
             <th scope="col">username</th>
             <th scope="col">judul</th>
-            <th scope="col">author</th>
+            <th scope="col">penulis</th>
             <th scope="col">tanggal pembuatan</th>
             <th scope="col">terakhir diubah</th>
             <th scope="col">puisi</th>
@@ -40,7 +54,7 @@
         <tbody>
           {% for d in data %}
           <tr>
-            
+            <td>{{ d['id'] }}</td>
             <td>{{ d['username'] }}</td>
             <td>{{ d['judul'] }}</td>
             <td>{{ d['author'] }}</td>
@@ -48,7 +62,7 @@
             <td>{{ d['tanggal_update'] }}</td>
             <td>{{ d['puisi'] }}</td>
             <td> 
-              <a href="output/{{ d['id'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
+              <a href="{{url_for ('edit_puisi', id=d['id']) }}" class="btn btn-warning btn-sm" role="button">Edit</a>
               <a href="{{ url_for('delete_puisi', id=d['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
             </td>
             </td>
