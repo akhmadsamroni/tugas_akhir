@@ -39,16 +39,16 @@
         <tbody>
           {% for d in data %}
           <tr>
-            <td>{{ d['username'] }}</td>
-            <td>{{ d['judul'] }}</td>
-            <td>{{ d['author'] }}</td>
-            <td>{{ d['tanggal_pembuatan'] }}</td>
-            <td>{{ d['tanggal_update'] }}</td>
-            <td>{{ d['puisi'] }}</td>
-            <td>
-              
-            <a href="output/{{ d['id'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
-            <a href="{{ url_for('delete_puisi', id=d['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
+            
+            <td>{{ d[0] }}</td>
+            <td>{{ d[1] }}</td>
+            <td>{{ d[2] }}</td>
+            <td>{{ d[3] }}</td>
+            <td>{{ d[4] }}</td>
+            <td>{{ d[5] }}</td>
+            <td> 
+              <a href="output/{{ d['id'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
+              <a href="{{ url_for('delete_puisi', id=d['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
             </td>
             </td>
           </tr>
@@ -57,44 +57,6 @@
       </table>
 
     </div>
-  
-    <!-- <div class="col-lg-8">
-      <div class="card mb-6">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-sm-3">
-              <p class="mb-0">pusii yang pernah dibuat</p>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">judul</th>
-                    <th scope="col">author</th>
-                    <th scope="col">tanggal pembuatan</th>
-                    <th scope="col">terakhir diubah</th>
-                    <th scope="col">puisi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for d in data %}
-                  <tr>
-                    <td>{{ d['judul'] }}</td>
-                    <td>{{ d['author'] }}</td>
-                    <td>{{ d['tanggal_pembuatan'] }}</td>
-                    <td>{{ d['tanggal_update'] }}</td>
-                    <td>{{ d['puisi'] }}</td>
-                        <a href="output/{{ d['id'] }}" class="btn btn-warning btn-sm" role="button">Edit</a>
-                        <a href="{{ url_for('delete_puisi', id=user['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 
   {% include "footer.html" %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

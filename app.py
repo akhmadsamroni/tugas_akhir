@@ -219,11 +219,10 @@ def account(username):
         # Mengambil data pengguna yang ingin ditampilkan
         cur = mysql.connection.cursor()
         cur.execute('''
-            SELECT users.username, list_puisi.*
-        FROM users
-        INNER JOIN list_puisi
-        ON users.username = list_puisi.author
-        ''')
+        SELECT u.username, l.judul, l.author, l.tanggal_pembuatan, l.puisi
+        FROM users u
+        JOIN list_puisi l ON u.username = l.author
+        WHERE u.username = %s''', (username,))
         data = cur.fetchall()
         cur.close()
         return render_template('account.html', data=data)
