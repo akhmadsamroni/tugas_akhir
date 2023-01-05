@@ -39,7 +39,7 @@
                 USERNAME: {{ session.username }}
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{url_for('account')}}">Akun</a></li>
+                <li><a class="dropdown-item" href="{{url_for('account', username=session['username'])}}">Akun</a></li>
                 <li><hr class="dropdown-divider" href="#"></li>
                 <li><a class="dropdown-item" href="{{url_for('logout')}}">logout</a></li>
               </ul>

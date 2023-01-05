@@ -80,6 +80,7 @@ def login():
         else:
             session['loggedin'] = True
             session['username'] = akun['username']
+            session['email'] = akun['email']
             session['level'] = akun['level']
             return redirect(url_for('index'))
     return render_template('login.html')
@@ -145,10 +146,6 @@ def result():
     result = cur.fetchone()
     return render_template('result.html', result=result)
 
-@app.route('/account')
-def account():
-    return render_template('account.html')
-
 @app.route('/list_users')
 def list_users():
     cur = mysql.connection.cursor()
@@ -203,6 +200,80 @@ def delete(id):
     mysql.connection.commit()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('list_users'))
+
+@app.route('/account/<username>')
+def account(username):
+    # Memeriksa apakah pengguna yang login sama dengan pengguna yang ingin ditampilkan
+    if session['username'] == username:
+        # Mengambil data pengguna yang login
+        cur = mysql.connection.cursor()
+        cur.execute('''
+        SELECT * 
+        FROM users 
+        WHERE username = %s''', (username, ))
+        usr = cur.fetchone()
+        cur.close()
+        return render_template('account.html', usr=usr)
+    # Jika pengguna yang login tidak sama dengan pengguna yang ingin ditampilkan
+    elif session['username'] != username:
+        # Mengambil data pengguna yang ingin ditampilkan
+        cur = mysql.connection.cursor()
+        cur.execute('''
+            SELECT users.username, list_puisi.*
+        FROM users
+        INNER JOIN list_puisi
+        ON users.username = list_puisi.author
+        ''')
+        data = cur.fetchall()
+        cur.close()
+        return render_template('account.html', data=data)
+
+@app.route('/edit_puisi/<id>', methods=['GET','POST'])
+def edit_puisi(id):
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        cur.execute('''
+        SELECT * 
+        FROM list_puisi  
+        WHERE id = %s''', (id, ))
+        user = cur.fetchone()
+        cur.close()
+
+        return render_template('edit_user.html', user=user)
+    elif request.method == 'POST':
+        judul = request.form['judul']
+        author = request.form['author']
+        tanggal_pembuatan = datetime.datetime.now()
+        tanggal_update = datetime.datetime.now()
+        puisi= request.form['puisi']
+        cur = mysql.connection.cursor()
+        
+        cur.execute(''' 
+        UPDATE list_puisi 
+        SET 
+            judul = %s,
+            author = %s,
+            tanggal_register = %s,
+            tanggal_update =%s,
+            puisi = %s
+            
+        WHERE
+            id = %s;
+        ''',(judul, author,tanggal_pembuatan, tanggal_update, puisi, id))
+        
+        mysql.connection.commit()
+        cur.close()
+        flash('Edit berhasil','success')
+        return redirect(url_for('account'))
+
+@app.route('/delete_puisi/<id>', methods=["GET"])
+def delete_puisi(id):
+    cur = mysql.connection.cursor()
+    cur.execute('''DELETE FROM list_puisi WHERE id=%s''', (id,))
+    mysql.connection.commit()
+    flash('data Berhasil di Hapus', 'success')
+    return redirect( url_for('acount'))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
