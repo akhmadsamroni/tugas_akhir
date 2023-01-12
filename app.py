@@ -185,7 +185,6 @@ def edit_user(id):
         email = request.form['email']
         password = request.form['password']
         level = 'user'
-        tanggal_register = datetime.datetime.now()
         tanggal_update = datetime.datetime.now()
 
         cur = mysql.connection.cursor()
@@ -197,11 +196,10 @@ def edit_user(id):
             email = %s,
             password = %s,
             level = %s,
-            tanggal_register = %s,
             tanggal_update =%s
         WHERE
             id = %s;
-        ''',(username, email, generate_password_hash(password), level,tanggal_register, tanggal_update, id))
+        ''',(username, email, generate_password_hash(password), level, tanggal_update, id))
         
         mysql.connection.commit()
         cur.close()
@@ -223,7 +221,7 @@ def account(username):
         # Mengambil data pengguna yang ingin ditampilkan
     cur = mysql.connection.cursor()
     cur.execute('''
-    SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.puisi
+    SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.tanggal_update, l.puisi
     FROM users u
     JOIN list_puisi l ON u.username = l.author
     WHERE u.username = %s''', (username,))
@@ -246,7 +244,7 @@ def edit_puisi(id):
     elif request.method == 'POST':
         judul = request.form['judul']
         author = request.form['author']
-        tanggal_pembuatan = datetime.datetime.now()
+        # tanggal_pembuatan = datetime.datetime.now()
         tanggal_update = datetime.datetime.now()
         puisi= request.form['puisi']
         cur = mysql.connection.cursor()
@@ -256,13 +254,12 @@ def edit_puisi(id):
         SET 
             judul = %s,
             author = %s,
-            tanggal_pembuatan = %s,
             tanggal_update =%s,
             puisi = %s
             
         WHERE
             id = %s;
-        ''',(judul, author,tanggal_pembuatan, tanggal_update, puisi, id))
+        ''',(judul, author, tanggal_update, puisi, id))
         
         mysql.connection.commit()
         cur.close()
