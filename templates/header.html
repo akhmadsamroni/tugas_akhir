@@ -10,7 +10,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-body-tertiary h-100 ">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">AI PUISI</a>
+        <a class="navbar-brand" href="#">GENERATOR PUISI</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button> 
@@ -18,20 +18,20 @@
           <ul class="navbar-nav">
             {% if session['level'] == 'admin' : %}
               <li class="nav-item">
-                <a class="nav-link" href="{{url_for('list_puisi')}}">List Puisi</a>
+                <a class="nav-link" href="{{url_for('list_puisi')}}">LIST PUISI</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{{url_for('list_users')}}">List User</a>
+                <a class="nav-link" href="{{url_for('list_users')}}">LIST USERS</a>
               </li>
             {% else : %}
               <li class="nav-item">
-                <a class="nav-link " href="{{url_for('index')}}">Home</a>
+                <a class="nav-link " href="{{url_for('index')}}">HOME</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link " href="{{url_for('list_puisi')}}">List Puisi</a>
+                <a class="nav-link " href="{{url_for('list_puisi')}}">LIST PUISI</a>
               </li>
               <li class="nav-item ">
-                <a class="nav-link " href="{{url_for('about')}}">about</a>
+                <a class="nav-link " href="{{url_for('about')}}">ABOUT</a>
               </li>
             {% endif %}
             

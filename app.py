@@ -49,15 +49,25 @@ def register():
         email = request.form['email']
         password = request.form['password']
         level = 'user'
+        tanggal_register = datetime.datetime.now()
+        tanggal_update = datetime.datetime.now()
 
         #cek username atau email
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * FROM users WHERE username=%s OR email=%s',(username, email, ))
         akun = cursor.fetchone()
         if akun is None:
-            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s)', (username, email, generate_password_hash(password), level))
+            cursor.execute
+            ('''
+            INSERT INTO users (username, email, password, level, tanggal_register,tanggal_update)
+            VALUES (%s, %s, %s, %s, %s, %s)''', 
+            (username, email, generate_password_hash(password), level, tanggal_register,tanggal_update))
             mysql.connection.commit()
             flash('Registrasi Berhasil','success')
+            #cek data 
+            if cursor.rowcount > 0:
+                print('Data berhasil diteruskan ke database')
+
         else :
             flash('Username atau email sudah ada','danger')
     return render_template('register.html')
@@ -139,7 +149,7 @@ def output():
         cur.execute('''INSERT INTO list_puisi (puisi,judul,author,tanggal_pembuatan,tanggal_update) VALUES (%s,%s,%s,%s,%s)''', (puisi,judul,author,tanggal_pembuatan,tanggal_update))
         mysql.connection.commit()
         cur.close()
-        return redirect(url_for('result'))
+        return redirect(url_for('result', username=session['username']))
 
 @app.route('/result/<username>')
 def result(username):
@@ -154,11 +164,15 @@ def result(username):
     cur.close()
     print(hsl)
     return render_template('result.html', hsl=hsl)
-    # cur = mysql.connection.cursor()
-    # cur.execute('''SELECT * FROM list_puisi ORDER BY id DESC LIMIT 1''')
-    # hsl = cur.fetchone()
-    # cur.close()
-    # return render_template('result.html', hsl=hsl)
+
+@app.route('/lihat/<id>')
+def lihat(id):
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM list_puisi WHERE id=%s''', (id,))
+    lht = cur.fetchone()
+    cur.close()
+    return render_template('lihat.html', lht=lht)
+
 
 @app.route('/list_users')
 def list_users():
@@ -209,7 +223,7 @@ def edit_user(id):
 @app.route('/delete/<id>', methods=["GET"])
 def delete(id):
     cur = mysql.connection.cursor()
-    cur.execute('''DELETE FROM users WHERE id=%s''', (id,))
+    cur.execute('''DELETE FROM users WHERE id=%s''', (id, ))
     mysql.connection.commit()
     cur.close()
     flash('data Berhasil di Hapus', 'success')

@@ -11,14 +11,14 @@
     {% include "header.html" %}
     {{ share.load() }}
     <div>
-        {% if hsl %}
+        {% if lht %}
 
         <div class="container mt-5">
             <blockquote class="blockquote">
-                <h4>{{ hsl['judul'] }}</h4>
-                <p class="mb-5">{{ hsl['puisi'] }}</p>
+                <h4>{{ lht['judul'] }}</h4>
+                <p class="mb-5">{{ lht['puisi'] }}</p>
                 <div>
-                    <footer class="blockquote-footer">Puisi karya {{ session.username }}--{{ hsl['tanggal_update'] }}</footer>
+                    <footer class="blockquote-footer">Puisi karya {{ lht['author'] }}--{{ lht['tanggal_update'] }}</footer>
                     {{ share.create(title='Share with: ') }}
                 </div>
                 

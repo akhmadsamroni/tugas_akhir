@@ -32,6 +32,9 @@
             <td>{{ p['tanggal_pembuatan'] }}</td>
             <td>{{ p['tanggal_update'] }}</td>
             <td>{{ p['puisi'] }}</td>
+            <td> 
+              <a href="{{url_for ('lihat', id=p['id']) }}" class="btn btn-warning btn-sm" role="button">lihat</a>
+            </td>
           </tr>
         {% endfor %}
       </tbody>
