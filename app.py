@@ -56,20 +56,16 @@ def register():
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * FROM users WHERE username=%s OR email=%s',(username, email, ))
         akun = cursor.fetchone()
-        if akun is None:
-            cursor.execute
-            ('''
-            INSERT INTO users (username, email, password, level, tanggal_register,tanggal_update)
-            VALUES (%s, %s, %s, %s, %s, %s)''', 
-            (username, email, generate_password_hash(password), level, tanggal_register,tanggal_update))
+        if akun:
+            flash('Username atau email sudah ada', 'danger')
+        else:
+            cursor.execute('''
+                INSERT INTO users (username, email, password, level, tanggal_register, tanggal_update)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (username, email, generate_password_hash(password), level, tanggal_register, tanggal_update))
             mysql.connection.commit()
             flash('Registrasi Berhasil','success')
-            #cek data 
-            if cursor.rowcount > 0:
-                print('Data berhasil diteruskan ke database')
-
-        else :
-            flash('Username atau email sudah ada','danger')
+        cursor.close()
     return render_template('register.html')
 
 #login
@@ -105,11 +101,17 @@ def logout():
 
 @app.route('/list_puisi')
 def list_puisi():
+    username = session['username']
+    # Mengambil data pengguna yang ingin ditampilkan
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM list_puisi''')
-    l_puisi = cur.fetchall()
+    cur.execute('''
+    SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.tanggal_update, l.puisi
+    FROM users u
+    JOIN list_puisi l ON u.username = l.author
+    WHERE u.username = %s''', (username,))
+    data = cur.fetchall()
     cur.close()
-    return render_template('list_puisi.html', l_puisi=l_puisi)
+    return render_template('list_puisi.html', data=data)
 
 @app.route('/about')
 def about():
