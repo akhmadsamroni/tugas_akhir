@@ -35,21 +35,8 @@
 
    {% else :%}
 
-    <div class="col">
 
-      <!-- pesan flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-        <!-- alert -->
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-            <strong>{{ message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>                    
-        {% endfor %}                   
-    {% endif %}
-    {% endwith %}
-
+    <!-- <div class="col">
       <table class="table mb-5">
         <thead>
           <tr>
@@ -81,9 +68,9 @@
           {% endfor %}
         </tbody>
       </table>
+    </div> -->
 
-    </div>
-
+    
     {% endif %}
 
   {% include "footer.html" %}

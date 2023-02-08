@@ -33,7 +33,12 @@
             <td>{{ p['tanggal_update'] }}</td>
             <td>{{ p['puisi'] }}</td>
             <td> 
+              {% if session['level'] == 'user' : %}
+              <a href="{{url_for ('edit_puisi', id=p['id']) }}" class="btn btn-warning btn-sm" role="button">Edit</a>
+              <a href="{{ url_for('delete_puisi', id=d['id'])}}" class="btn btn-danger btn-sm" role="button">Delete</a>
+              {% else :%}
               <a href="{{url_for ('lihat', id=p['id']) }}" class="btn btn-warning btn-sm" role="button">lihat</a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

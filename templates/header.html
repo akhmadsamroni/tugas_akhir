@@ -38,7 +38,7 @@
           <ul class="navbar-nav ml-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  USERNAME: {{ session.username }}
+                  {{ session.username }}
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="{{url_for('account', username=session['username'])}}">Akun</a></li>

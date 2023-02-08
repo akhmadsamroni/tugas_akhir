@@ -19,6 +19,7 @@
                 <p class="mb-5">{{ lht['puisi'] }}</p>
                 <div>
                     <footer class="blockquote-footer">Puisi karya {{ lht['author'] }}--{{ lht['tanggal_update'] }}</footer>
+                    {% elif session['level'] == 'admin' : %}
                     {{ share.create(title='Share with: ') }}
                 </div>
                 

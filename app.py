@@ -101,18 +101,24 @@ def logout():
 
 @app.route('/list_puisi')
 def list_puisi():
-    username = session['username']
-    # Mengambil data pengguna yang ingin ditampilkan
-    cur = mysql.connection.cursor()
-    cur.execute('''
-    SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.tanggal_update, l.puisi
-    FROM users u
-    JOIN list_puisi l ON u.username = l.author
-    WHERE u.username = %s''', (username,))
-    data = cur.fetchall()
-    cur.close()
-    return render_template('list_puisi.html', data=data)
-
+    if session['level'] == "user":
+        username = session['username']
+        # Mengambil data pengguna yang ingin ditampilkan
+        cur = mysql.connection.cursor()
+        cur.execute('''
+        SELECT u.username, l.id, l.judul, l.author, l.tanggal_pembuatan, l.tanggal_update, l.puisi
+        FROM users u
+        JOIN list_puisi l ON u.username = l.author
+        WHERE u.username = %s''', (username,))
+        data = cur.fetchall()
+        cur.close()
+        return render_template('list_puisi.html', data=data)
+    elif session['level'] == "admin":
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT * FROM list_puisi''')
+        data = cur.fetchall()
+        cur.close()
+        return render_template('list_puisi.html', data=data)
 @app.route('/about')
 def about():
     return render_template('about.html')
