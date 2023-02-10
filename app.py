@@ -296,6 +296,5 @@ def delete_puisi(id):
     cur.close()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('account', username=session['username']))
-
 if __name__ == "__main__":
     app.run(debug=True)
