@@ -11,7 +11,7 @@
 <body>
     {{ share.load() }}
     <div>
-        {% if lht %}
+        {% if lht and session['level'] == 'user' :%}
 
         <div class="container mt-5">
             <blockquote class="blockquote">
@@ -47,6 +47,18 @@
                 </div>
 
         </div> 
+
+        {%else%}
+        <div class="container mt-5">
+            <blockquote class="blockquote">
+                <h4>{{ lht['judul'] }}</h4>
+                <p class="mb-5">{{ lht['puisi'] }}</p>
+                <div>
+                    <footer class="blockquote-footer">Puisi karya {{ lht['author'] }}--{{ lht['tanggal_update'] }}</footer>
+            </blockquote>
+
+        </div> 
+        
         {% endif %}
     </div>
     
