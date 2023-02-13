@@ -1,3 +1,5 @@
+const content = `${window.location.href} \n\n ${document.body.innerText}`;
+const link = window.location.href;
 // Function to copy content
 function copyContent(content) {
     // Create a temporary input element
@@ -19,25 +21,25 @@ function copyContent(content) {
   // Function to share on Facebook
   function shareFacebook(content) {
     // Open a new window to share the content on Facebook
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(content)}`);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(content)}&url=${encodeURIComponent(link)}`);
   }
   
   // Function to share on Twitter
   function shareTwitter(content) {
     // Open a new window to share the content on Twitter
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}`);
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}&url=${encodeURIComponent(link)}`);
   }
   
   // Function to share on WhatsApp
   function shareWhatsApp(content) {
     // Open a new window to share the content on WhatsApp
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(content)}`);
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(content)}&url=${encodeURIComponent(link)}`);
   }
   
   // Function to share on Instagram
   function shareInstagram(content) {
     // Open a new window to share the content on Instagram
-    window.open(`https://www.instagram.com/share?url=${encodeURIComponent(content)}`);
+    window.open(`https://www.instagram.com/share?url=${encodeURIComponent(content)}&url=${encodeURIComponent(link)}`);
   }
   
   const contentBlockquote = document.querySelector("blockquote").innerText;
