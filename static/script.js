@@ -1,3 +1,30 @@
+//animasi puisi
+const kalimat = document.getElementById("kalimat");
+      const teks = "Aku Ingin (1989) .Aku ingin mencintaimu dengan sederhana. dengan kata yang tak sempat diucapkan. kayu kepada api yang menjadikannya abu. Aku ingin mencintaimu dengan sederhana. dengan isyarat yang tak sempat disampaikan. awan kepada hujan yang menjadikannya tiada.";
+      let i = 0;
+      let j = 0;
+      let kalimatBaru = "";
+      
+      function tulisKalimat() {
+        if (i < teks.length) {
+          if (teks[i] === ".") {
+            kalimatBaru += "<br>";
+            j = 0;
+          } else {
+            kalimatBaru += teks[i];
+            j++;
+          }
+          
+          kalimat.innerHTML = kalimatBaru;
+          i++;
+          setTimeout(tulisKalimat, 50);
+        }
+      }
+      
+      tulisKalimat();
+
+
+
 const content = `${window.location.href} \n\n ${document.body.innerText}`;
 const link = window.location.href;
 // Function to copy content
