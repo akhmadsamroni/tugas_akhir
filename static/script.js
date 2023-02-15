@@ -1,6 +1,6 @@
 //animasi puisi
 const kalimat = document.getElementById("kalimat");
-      const teks = "Aku Ingin (1989) .Aku ingin mencintaimu dengan sederhana. dengan kata yang tak sempat diucapkan. kayu kepada api yang menjadikannya abu. Aku ingin mencintaimu dengan sederhana. dengan isyarat yang tak sempat disampaikan. awan kepada hujan yang menjadikannya tiada.";
+      const teks = "Aku Ingin (1989)...Aku ingin mencintaimu dengan sederhana. dengan kata yang tak sempat diucapkan. kayu kepada api yang menjadikannya abu..Aku ingin mencintaimu dengan sederhana. dengan isyarat yang tak sempat disampaikan. awan kepada hujan yang menjadikannya tiada.";
       let i = 0;
       let j = 0;
       let kalimatBaru = "";

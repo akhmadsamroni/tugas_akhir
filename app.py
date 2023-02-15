@@ -31,8 +31,26 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 share = Share(app)
 
-@app.route('/')
+@app.route('/', methods=('GET','POST'))
 def home():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        #cek data username
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM users WHERE email=%s',(email, ))
+        akun = cursor.fetchone()
+        if akun is None:
+            flash('Login Gagal, Cek Username Anda','danger')
+        elif not check_password_hash(akun['password'], password):
+            flash('Login gagal, Cek Password Anda', 'danger')
+        else:
+            session['loggedin'] = True
+            session['username'] = akun['username']
+            session['email'] = akun['email']
+            session['level'] = akun['level']
+            return redirect(url_for('index'))
     return render_template('homepage.html')
 
 @app.route("/index")
@@ -68,28 +86,6 @@ def register():
         cursor.close()
     return render_template('register.html')
 
-#login
-@app.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        
-        #cek data username
-        cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * FROM users WHERE email=%s',(email, ))
-        akun = cursor.fetchone()
-        if akun is None:
-            flash('Login Gagal, Cek Username Anda','danger')
-        elif not check_password_hash(akun['password'], password):
-            flash('Login gagal, Cek Password Anda', 'danger')
-        else:
-            session['loggedin'] = True
-            session['username'] = akun['username']
-            session['email'] = akun['email']
-            session['level'] = akun['level']
-            return redirect(url_for('index'))
-    return render_template('login.html')
 
 #logout
 @app.route('/logout')
@@ -97,7 +93,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('username', None)
     session.pop('level', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 @app.route('/list_puisi')
 def list_puisi():
