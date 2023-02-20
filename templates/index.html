@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GENERATOR PUISI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/style.css">
+
 </head>
 <body>
   {% include "header.html" %}
@@ -18,15 +20,65 @@
   {% else :%}
 
   <div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <form action="{{ url_for('output') }}" method="post">
-          <input type="text" name="hasil_puisi" class="form-control" placeholder="Masukkan teks disini">
-          <button type="submit">Enter</button>
-      </form>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form action="{{ url_for('output') }}" method="post">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="max_length">Max Length:</label>
+                <input type="number" id="max_length" name="max_length" class="form-control" value="50">
+              </div>
+              <div class="form-group">
+                <label for="num_return_sequences">Num Return Sequences:</label>
+                <input type="number" id="num_return_sequences" name="num_return_sequences" class="form-control" value="1">
+              </div>
+              <div class="form-group">
+                <label for="repetition_penalty">Repetition Penalty:</label>
+                <input type="number" step="0.1" id="repetition_penalty" name="repetition_penalty" class="form-control" value="1.0">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="temperature">Temperature:</label>
+                <input type="number" step="0.1" id="temperature" name="temperature" class="form-control" value="2.0">
+              </div>
+              <div class="form-group">
+                <label for="top_k">Top K:</label>
+                <input type="number" id="top_k" name="top_k" class="form-control" value="50">
+              </div>
+              <div class="form-group">
+                <label for="top_p">Top P:</label>
+                <input type="number" step="0.01" id="top_p" name="top_p" class="form-control" value="0.95">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="no_repeat_ngram_size">No Repeat Ngram Size:</label>
+                <input type="number" id="no_repeat_ngram_size" name="no_repeat_ngram_size" class="form-control" value="2">
+              </div>
+              <div class="form-group">
+                <label for="num_beams">Num Beams:</label>
+                <input type="number" id="num_beams" name="num_beams" class="form-control" value="5">
+              </div>
+              <div class="form-group">
+                <label for="penalty">Penalty:</label>
+                <input type="number" step="0.1" id="penalty" name="penalty" class="form-control" value="0.5">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex">
+            <textarea class="form-control rounded-start-pill" rows="1"></textarea>
+            <button class="btn btn-outline-secondary justify-content-start rounded-end-circle" type="submit">
+              <i class="bi bi-send"></i>
+            </button>
+          </div>      
+        </form>
+      </div>
     </div>
   </div>
-  </div>
+  
 
   {% endif %}
 

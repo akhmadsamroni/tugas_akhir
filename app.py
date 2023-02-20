@@ -131,7 +131,11 @@ def output():
             temperature=2.0, # untuk mengatur probability next word 
             top_k=50, # ambil top kata dengan probability tertinggi / kata yang paling mungkin
             top_p=0.95, # ambil kata dan jumlah kan probalitiy nya sesuai yang di definisikan
-            no_repeat_ngram_size=2 # agar tidak ada 2 gram/kata yang muncul dua kali:
+            no_repeat_ngram_size=2, # agar tidak ada 2 gram/kata yang muncul dua kali:
+            do_sample=True, # menggunakan teknik sampling
+            early_stopping=False, # menghasilkan output sampai max_length terpenuhi
+            num_beams=5, # menggunakan teknik beam search dengan jumlah balok sebanyak 5
+            penalty=0.5 # menerapkan penalti pada output yang memiliki kesamaan dengan output sebelumnya
             )
 
         # Converting list to string and removing newline chars
@@ -292,5 +296,10 @@ def delete_puisi(id):
     cur.close()
     flash('data Berhasil di Hapus', 'success')
     return redirect( url_for('account', username=session['username']))
+
+@app.route('/demo')
+def demo():
+    return render_template('demo.html')
+
 if __name__ == "__main__":
     app.run(debug=True)

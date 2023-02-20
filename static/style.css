@@ -1,3 +1,4 @@
+/* homepage */
 body {
     color: #000;
     overflow-x: hidden;
@@ -6,7 +7,7 @@ body {
     background-repeat: no-repeat;
 }
 
-input, textarea {
+input{
     background-color: #F3E5F5;
     border-radius: 50px !important;
     padding: 12px 15px 12px 15px !important;
@@ -17,6 +18,11 @@ input, textarea {
     font-size: 16px !important;
     color: #000 !important;
     font-weight: 400;
+}
+
+textarea {
+    resize: none !important; /*untuk mengilangkan garis di textarea*/
+    
 }
 
 input:focus, textarea:focus {
@@ -106,7 +112,7 @@ p {
 }
 
 .btn-white {
-    border-radius: 50px;
+    border-radius: 50px !important;
     color: #D500F9;
     background-color: #fff;
     padding: 8px 40px;
@@ -165,4 +171,29 @@ a:hover {
         margin-top: 50px !important;
         margin-bottom: 50px !important;
     }
+}
+/* end homepage */
+
+
+
+/* css untuk tombol send berbentuk pesawat */
+.kirim {
+    display: inline-block;
+    color: transparent;
+    margin-left: -40px; /*menyesuaikan dengan posisi textarea*/
+}
+.iconsend {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+  
+  .textarea-container {
+  }
+
+  /*end  tombol send*/
+  
+footer {
+    background-image: linear-gradient(to right, #FFD54F, #D500F9);
 }
