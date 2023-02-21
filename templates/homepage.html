@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    {% include "header.html" %}
   <div class="container px-4 py-5 mx-auto">
     <div class="card card0">
         <div class="d-flex flex-lg-row flex-column-reverse">
@@ -39,18 +40,18 @@
                         </div> -->
                     </div>
                 </div>
-                <div class="bottom text-center mb-5">
-                    <a href="{{url_for('register')}}" class="sm-text mx-auto mb-3">Belum Punya Akun?<button class="btn btn-white ml-2">Buat Akun</button></a>
+                <div class="bottom text-center mb-5">Belum Punya Akun?
+                    <a href="{{url_for('register')}}" class="sm-text mx-auto mb-3"><button class="btn btn-white ml-2">Buat Akun</button></a>
                 </div>
             </div>
             <div class="card card2">
                 <div class="my-auto mx-md-5 px-md-5 right">
-                    <p class="text-white" id="kalimat"></p>
+                    <p class="" id="kalimat"></p>
             </div>
         </div>
     </div>
 </div>
-
+{% include "footer.html" %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>     

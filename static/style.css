@@ -1,10 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+@import url('https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap');
+
+title{
+    font-family: 'Nanum Pen Script', cursive !important;
+}
+.heading{
+    font-family: 'Nanum Pen Script', cursive;
+}
 /* homepage */
 body {
     color: #000;
     overflow-x: hidden;
     height: 100%;
-    background-image: linear-gradient(to right, #D500F9, #FFD54F);
+    background-image: linear-gradient(135deg, #faedd2, #ddffd8c3) !important;
     background-repeat: no-repeat;
+    font-family: 'Montserrat', sans-serif;
 }
 
 input{
@@ -29,7 +40,7 @@ input:focus, textarea:focus {
     -moz-box-shadow: none !important;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
-    border: 1px solid #D500F9 !important;
+    border: 1px solid #faedd2 !important;
     outline-width: 0;
     font-weight: 400;
 }
@@ -42,19 +53,20 @@ button:focus {
 }
 
 .card {
-    border-radius: 0;
+    border-radius: 0 !important;
     border: none;
+    --bs-border-color-translucent:0
 }
 
 .card1 {
     width: 50%;
     padding: 40px 30px 10px 30px;
+    background-color: #d6c4a6 !important;
 }
 
 .card2 {
     width: 50%;
-    background-image: linear-gradient(to right, #FFD54F, #D500F9);
-
+    background-image: linear-gradient(135deg, #faedd2, #ddffd8c3) !important;
 }
 
 .right {
@@ -65,7 +77,9 @@ button:focus {
 p {
     font-size: 20px; /* reduce font size on smaller screens */
     text-align: center;
-    font-family: Consolas, monospace;
+    font-family: 'Nanum Pen Script', cursive;
+    line-height: 1.5;
+    color: #7f5539;
 }
 
 
@@ -98,9 +112,9 @@ p {
 
 .btn-color {
     border-radius: 50px;
-    color: #fff;
-    background-image: linear-gradient(to right, #FFD54F, #D500F9);
-    padding: 15px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    background-image: linear-gradient(135deg, #faedd2, #ddffd8c3) !important;    padding: 15px;
     cursor: pointer;
     border: none !important;
     margin-top: 40px;
@@ -108,22 +122,21 @@ p {
 
 .btn-color:hover {
     color: #fff;
-    background-image: linear-gradient(to right, #D500F9, #FFD54F);
+    background-image: linear-gradient(to right, #faedd2, #FFD54F);
 }
 
 .btn-white {
     border-radius: 50px !important;
-    color: #D500F9;
+    color: #faedd2;
     background-color: #fff;
     padding: 8px 40px;
     cursor: pointer;
-    border: 2px solid #D500F9 !important;
+    border: 2px solid #faedd2 !important;
 }
 
 .btn-white:hover {
-    color: #fff;
-    background-image: linear-gradient(to right, #FFD54F, #D500F9);
-}
+    color: #2B2D42;
+    background-image: linear-gradient(135deg, #faedd2, #ddffd8c3) !important;}
 
 a {
     color: #000;
@@ -174,6 +187,12 @@ a:hover {
 }
 /* end homepage */
 
+/* navbar */
+nav {
+    background-image: linear-gradient(to left, #7f5539, #d6c4a6);
+}
+/* end navbar */
+
 
 
 /* css untuk tombol send berbentuk pesawat */
@@ -195,5 +214,4 @@ a:hover {
   /*end  tombol send*/
   
 footer {
-    background-image: linear-gradient(to right, #FFD54F, #D500F9);
-}
+    background-image: linear-gradient(135deg, #faedd2, #ddffd8c3) !important;}
